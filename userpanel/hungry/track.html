@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<title>Lacak Pesanan - Wash Order</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1 user-scalable=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="css/materialize.css">
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/owl.carousel.css">
+	<link rel="stylesheet" href="css/owl.theme.css">
+	<link rel="stylesheet" href="css/owl.transitions.css">
+	<link rel="stylesheet" href="css/fakeLoader.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/washorder.css">
+	<link rel="shortcut icon" href="img/favicon.png">
+</head>
+<body>
+	<div id="wo-shell"></div>
+
+	<div class="pages section">
+		<div class="container">
+			<div class="pages-head"><h3>LACAK PESANAN</h3></div>
+
+			<div class="wo-tabs"><button id="tab-code" class="on">Kode Pesanan</button><button id="tab-phone">Nomor HP</button></div>
+			<form id="search" class="wo-field">
+				<input id="q" type="text" placeholder="Contoh: WO-AB3XK" autocapitalize="characters" style="height:46px">
+				<button type="submit" class="button-default" style="width:100%;margin-top:12px">Cari</button>
+			</form>
+			<div class="wo-err" id="err"></div>
+			<div id="result" style="margin-top:16px"></div>
+		</div>
+	</div>
+
+	<div id="fakeLoader"></div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/materialize.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/fakeLoader.min.js"></script>
+	<script src="js/wo-user.js"></script>
+	<script>WU.shell();</script>
+	<script src="js/main.js"></script>
+	<script>
+	(function () {
+		var $ = function (id) { return document.getElementById(id); }, mode = 'code', timer;
+		function setMode(m) {
+			mode = m; $('tab-code').classList.toggle('on', m === 'code'); $('tab-phone').classList.toggle('on', m === 'phone');
+			$('q').placeholder = m === 'code' ? 'Contoh: WO-AB3XK' : '08xxxxxxxxxx'; $('q').type = m === 'code' ? 'text' : 'tel';
+		}
+		$('tab-code').onclick = function () { setMode('code'); }; $('tab-phone').onclick = function () { setMode('phone'); };
+
+		function error(m) { $('err').textContent = m; $('err').style.display = m ? 'block' : 'none'; }
+
+		function showOrder(code, silent) {
+			WU.api('/orders/track/' + encodeURIComponent(code)).then(function (r) {
+				var o = r.data; error('');
+				WU.rememberOrder(o.code);
+				var due = o.total - o.paid;
+				$('result').innerHTML =
+					'<div class="wo-card"><div style="display:flex;justify-content:space-between;align-items:center"><div><small style="color:#888">Kode pesanan</small><br><b style="font-size:20px;letter-spacing:1px">' + o.code + '</b></div>' + WU.badge(o.status) + '</div>' +
+					WU.progress(o.status) + (o.washer_name && o.status !== 'Selesai' && o.status !== 'Dibatalkan' ? '<p style="font-size:12px;color:#666;margin:6px 0 0">Ditangani oleh <b>' + WU.esc(o.washer_name) + '</b></p>' : '') + '</div>' +
+					'<div class="wo-card"><h5>Rincian</h5>' + o.items.map(function (i) {
+						return '<div class="wo-row"><span>' + WU.esc(i.service_name) + ' <small style="color:#999">' + i.qty + (i.type === 'kg' ? ' kg' : ' pcs') + '</small></span><b>' + WU.rp(i.subtotal) + '</b></div>'; }).join('') +
+					'<div class="wo-row" style="border-top:1px solid #eee;margin-top:6px;padding-top:10px"><span>Total</span><b>' + WU.rp(o.total) + '</b></div>' +
+					'<div class="wo-row"><span>Dibayar</span><span>' + WU.rp(o.paid) + '</span></div>' +
+					(o.status !== 'Dibatalkan' ? '<div class="wo-row"><span>Sisa tagihan</span><b style="color:' + (due > 0 ? '#dc2626' : '#16a34a') + '">' + (due > 0 ? WU.rp(due) : 'Lunas') + '</b></div>' : '') +
+					'<p style="font-size:11px;color:#999;margin:8px 0 0">Total bisa berubah setelah berat cucian ditimbang.</p></div>' +
+					'<div class="wo-card"><h5>Riwayat status</h5><ul class="wo-log">' + o.logs.slice().reverse().map(function (l) {
+						return '<li><b>' + WU.label(l.status) + '</b> <small style="color:#999">' + WU.date(l.created_at) + '</small>' + (l.note ? '<br><small style="color:#666">' + WU.esc(l.note) + '</small>' : '') + '</li>'; }).join('') + '</ul></div>';
+				clearInterval(timer);
+				if (o.status !== 'Selesai' && o.status !== 'Dibatalkan') timer = setInterval(function () { showOrder(o.code, true); }, 20000);
+			}).catch(function (ex) { if (!silent) { $('result').innerHTML = ''; error(ex.message); } });
+		}
+
+		function showPhone(phone) {
+			WU.api('/orders/by-phone/' + encodeURIComponent(phone)).then(function (r) {
+				error('');
+				$('result').innerHTML = r.data.length ? '<div class="wo-card"><h5>Riwayat pesanan</h5>' + r.data.map(function (o) {
+					return '<a class="wo-orderlink" href="track.html?code=' + o.code + '"><span><b>' + o.code + '</b><br><small>' + WU.date(o.created_at) + ' · ' + WU.rp(o.total) + '</small></span>' + WU.badge(o.status) + '</a>';
+				}).join('') + '</div>' : '';
+				if (!r.data.length) error('Belum ada pesanan dengan nomor tersebut.');
+			}).catch(function (ex) { error(ex.message); });
+		}
+
+		$('search').addEventListener('submit', function (e) {
+			e.preventDefault(); var v = $('q').value.trim(); if (!v) return;
+			clearInterval(timer); $('result').innerHTML = '';
+			mode === 'code' ? showOrder(v) : showPhone(v);
+		});
+
+		var code = new URLSearchParams(location.search).get('code'), mine = WU.myOrders();
+		if (code) { $('q').value = code; showOrder(code); }
+		else if (mine.length) {
+			$('result').innerHTML = '<div class="wo-card"><h5>Pesanan di perangkat ini</h5><div id="mine"></div></div>';
+			Promise.all(mine.slice(0, 8).map(function (c) { return WU.api('/orders/track/' + c).then(function (r) { return r.data; }).catch(function () { return null; }); })).then(function (list) {
+				$('mine').innerHTML = list.filter(Boolean).map(function (o) {
+					return '<a class="wo-orderlink" href="track.html?code=' + o.code + '"><span><b>' + o.code + '</b><br><small>' + WU.date(o.created_at) + ' · ' + WU.rp(o.total) + '</small></span>' + WU.badge(o.status) + '</a>';
+				}).join('');
+			});
+		}
+	})();
+	</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wash Order | Layanan</title>
+<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+<link href="./css/style.css" rel="stylesheet">
+<link href="./css/wo.css" rel="stylesheet">
+</head>
+<body>
+<script src="./js/wo-admin.js"></script>
+<script>WO.begin({ title: 'Layanan & Harga', active: 'services', actions: '<button class="btn btn-sm btn-primary btn-round" id="btn-add">+ Tambah Layanan</button>' });</script>
+
+<div class="card">
+    <div class="card-header"><h4 class="card-title">Daftar Layanan</h4><small class="text-muted">Layanan nonaktif tidak tampil di halaman pemesan. Perubahan harga hanya berlaku untuk pesanan baru.</small></div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead><tr><th>Layanan</th><th>Satuan</th><th>Harga</th><th>Status</th><th></th></tr></thead>
+            <tbody id="rows"><tr><td colspan="5" class="wo-empty">Memuat...</td></tr></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="smodal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <form id="s-form">
+    <div class="modal-header"><h5 class="modal-title" id="s-title">Layanan</h5><button type="button" class="close" data-dismiss="modal">&times;</button></div>
+    <div class="modal-body">
+        <div class="form-group"><label>Nama layanan</label><input class="form-control" id="s-name" required></div>
+        <div class="form-group"><label>Dihitung per</label><select class="form-control" id="s-type"><option value="kg">Kilogram (kg)</option><option value="satuan">Satuan (pcs)</option></select></div>
+        <div class="form-group"><label>Harga (Rp)</label><input type="number" min="1" class="form-control" id="s-price" required></div>
+        <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="s-active" checked><label class="custom-control-label" for="s-active">Aktif (tampil di pemesan)</label></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button><button class="btn btn-primary" type="submit">Simpan</button></div>
+    </form>
+</div></div></div>
+
+<script>WO.end();</script>
+<script>
+WO.ready(function () {
+    var $ = window.jQuery, list = [], editId = null;
+    function g(id) { return document.getElementById(id); }
+
+    function load() {
+        WO.api('/admin/services').then(function (r) {
+            list = r.data;
+            g('rows').innerHTML = list.map(function (s) {
+                return '<tr><td><b>' + WO.esc(s.name) + '</b></td><td>' + (s.type === 'kg' ? 'per kg' : 'per pcs') + '</td><td>' + WO.rp(s.price) +
+                    '</td><td>' + (s.active ? '<span class="badge badge-success">Aktif</span>' : '<span class="badge badge-secondary">Nonaktif</span>') +
+                    '</td><td class="text-right"><button class="btn btn-sm btn-outline-primary" data-edit="' + s.id + '"><i class="fa fa-pencil"></i> Ubah</button></td></tr>';
+            }).join('');
+        }).catch(WO.fail);
+    }
+    function openForm(s) {
+        editId = s ? s.id : null;
+        g('s-title').textContent = s ? 'Ubah Layanan' : 'Tambah Layanan';
+        g('s-name').value = s ? s.name : ''; g('s-type').value = s ? s.type : 'kg'; g('s-price').value = s ? s.price : ''; g('s-active').checked = s ? !!s.active : true;
+        $('#smodal').modal('show');
+    }
+    g('btn-add').addEventListener('click', function () { openForm(null); });
+    g('rows').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-edit]'); if (!b) return;
+        openForm(list.filter(function (s) { return String(s.id) === b.dataset.edit; })[0]);
+    });
+    g('s-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var body = { name: g('s-name').value, type: g('s-type').value, price: Number(g('s-price').value), active: g('s-active').checked ? 1 : 0 };
+        WO.api(editId ? '/admin/services/' + editId : '/admin/services', { method: editId ? 'PUT' : 'POST', body: body })
+            .then(function (r) { $('#smodal').modal('hide'); WO.toast(r.message); load(); }).catch(WO.fail);
+    });
+    load();
+});
+</script>
+</body>
+</html>

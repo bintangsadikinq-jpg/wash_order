@@ -1,0 +1,17 @@
+{
+  "name": "wash-order-app",
+  "version": "1.0.0",
+  "description": "Modular Wash Order System",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "db:setup": "node setup_db.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

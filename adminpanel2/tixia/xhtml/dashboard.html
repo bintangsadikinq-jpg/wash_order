@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wash Order | Dashboard</title>
+<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+<link href="./css/style.css" rel="stylesheet">
+<link href="./css/wo.css" rel="stylesheet">
+</head>
+<body>
+<script src="./js/wo-admin.js"></script>
+<script>WO.begin({ title: 'Dashboard', subtitle: 'Ringkasan pesanan dan keuangan hari ini', actions: '<a href="orders.html?new=1" class="btn btn-primary btn-rounded"><i class="fa fa-plus mr-2"></i>Pesanan Baru</a>' });</script>
+
+<div class="row">
+    <div class="col-xl-3 col-sm-6"><div class="widget-stat card"><div class="card-body p-4"><div class="media ai-icon">
+        <span class="mr-3 bgl-warning text-warning"><i class="fa fa-hourglass-half"></i></span>
+        <div class="media-body"><p class="mb-1">Menunggu</p><h4 class="mb-0" id="k-wait">-</h4></div></div></div></div></div>
+    <div class="col-xl-3 col-sm-6"><div class="widget-stat card"><div class="card-body p-4"><div class="media ai-icon">
+        <span class="mr-3 bgl-info text-info"><i class="fa fa-refresh"></i></span>
+        <div class="media-body"><p class="mb-1">Diproses</p><h4 class="mb-0" id="k-proc">-</h4></div></div></div></div></div>
+    <div class="col-xl-3 col-sm-6"><div class="widget-stat card"><div class="card-body p-4"><div class="media ai-icon">
+        <span class="mr-3 bgl-success text-success"><i class="fa fa-check-circle"></i></span>
+        <div class="media-body"><p class="mb-1">Siap diambil</p><h4 class="mb-0" id="k-ready">-</h4></div></div></div></div></div>
+    <div class="col-xl-3 col-sm-6"><div class="widget-stat card"><div class="card-body p-4"><div class="media ai-icon">
+        <span class="mr-3 bgl-danger text-danger"><i class="fa fa-exclamation-circle"></i></span>
+        <div class="media-body"><p class="mb-1">Piutang</p><h4 class="mb-0" id="k-rec">-</h4></div></div></div></div></div>
+</div>
+
+<div class="row">
+    <div class="col-xl-8">
+        <div class="card">
+            <div class="card-header border-0 pb-0"><h4 class="card-title">Kas 7 Hari Terakhir</h4></div>
+            <div class="card-body"><canvas id="chart" height="120"></canvas></div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header border-0 pb-0"><h4 class="card-title">Ringkasan Keuangan</h4></div>
+            <div class="card-body">
+                <small class="text-muted font-w600">HARI INI</small>
+                <div class="d-flex justify-content-between mt-2"><span>Pemasukan</span><b class="text-success" id="t-in">-</b></div>
+                <div class="d-flex justify-content-between"><span>Pengeluaran</span><b class="text-danger" id="t-out">-</b></div>
+                <hr>
+                <small class="text-muted font-w600">BULAN INI</small>
+                <div class="d-flex justify-content-between mt-2"><span>Pemasukan</span><b class="text-success" id="m-in">-</b></div>
+                <div class="d-flex justify-content-between"><span>Pengeluaran</span><b class="text-danger" id="m-out">-</b></div>
+                <div class="d-flex justify-content-between mt-3 pt-3 border-top"><span class="font-w600">Laba bersih</span><b class="fs-20" id="m-net">-</b></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-8">
+        <div class="card">
+            <div class="card-header border-0"><h4 class="card-title">Pesanan Terbaru</h4><a href="orders.html" class="btn btn-outline-primary btn-sm btn-rounded">Lihat semua</a></div>
+            <div class="card-body pt-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>Kode</th><th>Pelanggan</th><th>Total</th><th>Status</th><th>Pembayaran</th></tr></thead>
+                        <tbody id="recent"><tr><td colspan="5" class="wo-empty">Memuat...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header border-0 pb-0"><h4 class="card-title">Beban Kerja Washer</h4></div>
+            <div class="card-body" id="workers"></div>
+        </div>
+    </div>
+</div>
+
+<script>WO.end();</script>
+<script src="./vendor/chart.js/Chart.bundle.min.js"></script>
+<script>
+WO.ready(function () {
+    var chart;
+    function load() {
+        WO.api('/admin/dashboard').then(function (d) {
+            var c = d.counts;
+            document.getElementById('k-wait').textContent = c.Menunggu;
+            document.getElementById('k-proc').textContent = c.Ditugaskan + c.Dicuci;
+            document.getElementById('k-ready').textContent = c.Siap;
+            document.getElementById('k-rec').textContent = WO.rp(d.receivable);
+            document.getElementById('t-in').textContent = WO.rp(d.today.income);
+            document.getElementById('t-out').textContent = WO.rp(d.today.expense);
+            document.getElementById('m-in').textContent = WO.rp(d.month.income);
+            document.getElementById('m-out').textContent = WO.rp(d.month.expense);
+            var net = d.month.income - d.month.expense, n = document.getElementById('m-net');
+            n.textContent = WO.rp(net); n.className = net >= 0 ? 'text-success' : 'text-danger';
+
+            document.getElementById('recent').innerHTML = d.recent.length ? d.recent.map(function (o) {
+                return '<tr class="clickable" onclick="WO.go(\'orders.html?open=' + o.id + '\')"><td class="wo-code">' + WO.esc(o.code) + '</td><td>' + WO.esc(o.client_name) +
+                    '</td><td>' + WO.rp(o.total) + '</td><td>' + WO.badge(o.status) + '</td><td>' + WO.payBadge(o) + '</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="wo-empty">Belum ada pesanan</td></tr>';
+
+            document.getElementById('workers').innerHTML = d.workers.length ? d.workers.map(function (w) {
+                var pct = Math.min(100, w.active_jobs * 25);
+                return '<div class="mb-4"><div class="d-flex justify-content-between mb-1"><span class="font-w500">' + WO.esc(w.name) + '</span><small class="text-muted">' + w.active_jobs + ' tugas aktif</small></div>' +
+                    '<div class="progress" style="height:8px"><div class="progress-bar ' + (w.active_jobs ? 'bg-info' : 'bg-success') + '" style="width:' + (pct || 4) + '%"></div></div></div>';
+            }).join('') : '<div class="wo-empty">Belum ada washer</div>';
+
+            var labels = d.series.map(function (s) { return s.day.slice(5).split('-').reverse().join('/'); });
+            var cfg = { labels: labels, datasets: [
+                { label: 'Pemasukan', backgroundColor: '#2bc155', data: d.series.map(function (s) { return s.income; }) },
+                { label: 'Pengeluaran', backgroundColor: '#f72b50', data: d.series.map(function (s) { return s.expense; }) }] };
+            if (chart) { chart.data = cfg; chart.update(); return; }
+            chart = new Chart(document.getElementById('chart'), { type: 'bar', data: cfg,
+                options: { scales: { yAxes: [{ ticks: { beginAtZero: true, callback: function (v) { return v.toLocaleString('id-ID'); } } }] },
+                    tooltips: { callbacks: { label: function (t, data) { return data.datasets[t.datasetIndex].label + ': ' + WO.rp(t.yLabel); } } } } });
+        }).catch(WO.fail);
+    }
+    load(); setInterval(load, 30000);
+});
+</script>
+</body>
+</html>

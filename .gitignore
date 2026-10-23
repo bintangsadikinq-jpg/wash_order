@@ -1,0 +1,14 @@
+node_modules/
+laundry.db
+laundry.db-*
+*.log
+.claude/
+
+# template pihak ketiga yang tidak dipakai aplikasi (arsip zip, template lama, dokumentasi, source scss)
+*.zip
+adminpanel/
+adminpanel2/Codeigniter-*/
+__MACOSX/
+userpanel/documentation/
+adminpanel2/tixia/xhtml/scss/
+adminpanel2/tixia/xhtml/**/*.map

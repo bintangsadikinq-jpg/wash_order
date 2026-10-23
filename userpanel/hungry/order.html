@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<title>Pesan Cuci - Wash Order</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1 user-scalable=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="css/materialize.css">
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/owl.carousel.css">
+	<link rel="stylesheet" href="css/owl.theme.css">
+	<link rel="stylesheet" href="css/owl.transitions.css">
+	<link rel="stylesheet" href="css/fakeLoader.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/washorder.css">
+	<link rel="shortcut icon" href="img/favicon.png">
+</head>
+<body>
+	<div id="wo-shell"></div>
+
+	<div class="pages section">
+		<div class="container wo-order-wrap">
+
+			<!-- Form -->
+			<div id="form-view">
+				<div class="pages-head"><h3>PESAN CUCI</h3></div>
+				<form id="order-form" novalidate class="wo-order"><div>
+					<div class="wo-card">
+						<h5>1. Pilih layanan</h5>
+						<p style="margin:0 0 6px;font-size:12px;color:#888">Untuk kiloan, isi perkiraan berat. Berat final ditimbang saat cucian diterima.</p>
+						<div id="svc-list"><p class="center-align">Memuat layanan...</p></div>
+					</div>
+
+					<div class="wo-card wo-field">
+						<h5>2. Data pemesan</h5>
+						<label for="name">Nama</label><input id="name" type="text" placeholder="Nama lengkap" autocomplete="name">
+						<label for="phone">No. HP / WhatsApp</label><input id="phone" type="tel" placeholder="08xxxxxxxxxx" autocomplete="tel">
+						<label for="dtype">Cara penyerahan</label>
+						<select id="dtype" class="browser-default">
+							<option value="jemput">Jemput ke alamat saya</option>
+							<option value="antar_sendiri">Saya antar sendiri ke laundry</option>
+						</select>
+						<div id="addr-wrap"><label for="address">Alamat jemput</label><textarea id="address" placeholder="Jalan, nomor, patokan"></textarea></div>
+						<label for="notes">Catatan (opsional)</label><textarea id="notes" placeholder="Contoh: pisahkan baju putih"></textarea>
+					</div>
+
+					<div class="wo-err" id="err"></div>
+					<div class="wo-total mobile">
+						<div><small style="color:#888">Perkiraan total</small><br><b id="total">Rp 0</b></div>
+						<button type="submit" class="button-default" style="margin:0" id="submit">Kirim Pesanan</button>
+					</div>
+					</div>
+					<aside class="wo-summary wo-card">
+						<h5><i class="fa fa-shopping-basket" style="color:#0ea5e9"></i> Ringkasan Pesanan</h5>
+						<div id="sum-lines"></div>
+						<div class="grand"><span>Perkiraan total</span><b id="sum-total">Rp 0</b></div>
+						<p style="font-size:11px;color:#9ca3af;margin:8px 0 12px">Total final mengikuti berat hasil timbangan. Bayar setelah cucian selesai.</p>
+						<button type="submit" class="button-default" style="width:100%;margin:0;text-align:center;box-sizing:border-box" id="submit2">Kirim Pesanan</button>
+					</aside>
+				</form>
+			</div>
+
+			<!-- Sukses -->
+			<div id="done-view" style="display:none">
+				<div class="wo-done">
+					<div class="check"><i class="fa fa-check-circle"></i></div>
+					<h5 style="margin:6px 0">Pesanan terkirim!</h5>
+					<p style="font-size:13px">Simpan kode pesanan Anda untuk melacak status cucian:</p>
+					<div class="wo-codebox" id="done-code">-</div>
+					<p style="font-size:12px;color:#888">Kode juga tersimpan otomatis di perangkat ini. Admin akan segera memproses pesanan Anda.</p>
+					<a id="done-track" href="track.html" class="button-default">Lacak Pesanan</a>
+					<a href="order.html" class="button-default" style="background:#fff;color:#0284c7">Pesan Lagi</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div id="fakeLoader"></div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/materialize.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/fakeLoader.min.js"></script>
+	<script src="js/wo-user.js"></script>
+	<script>WU.shell();</script>
+	<script src="js/main.js"></script>
+	<script>
+	(function () {
+		var services = [], qty = {};
+		var $ = function (id) { return document.getElementById(id); };
+		var me = WU.me();
+		$('name').value = me.name || ''; $('phone').value = me.phone || ''; $('address').value = me.address || '';
+
+		function render() {
+			$('svc-list').innerHTML = services.map(function (s) {
+				var q = qty[s.id] || 0, step = s.type === 'kg' ? 0.5 : 1;
+				return '<div class="wo-svc"><img class="thumb" src="' + WU.svcImg(s.name) + '" alt=""><div class="nm">' + WU.esc(s.name) + '<small>' + WU.rp(s.price) + ' / ' + (s.type === 'kg' ? 'kg' : 'pcs') + '</small></div>' +
+					'<div class="wo-qty"><button type="button" data-id="' + s.id + '" data-d="-' + step + '">−</button>' +
+					'<input type="number" inputmode="decimal" min="0" step="' + step + '" value="' + (q || '') + '" placeholder="0" data-id="' + s.id + '">' +
+					'<button type="button" data-id="' + s.id + '" data-d="' + step + '">+</button></div></div>';
+			}).join('') || '<p class="center-align">Belum ada layanan tersedia.</p>';
+			total();
+		}
+		function total() {
+			var t = services.reduce(function (a, s) { return a + Math.round((qty[s.id] || 0) * s.price); }, 0);
+			$('total').textContent = WU.rp(t); $('sum-total').textContent = WU.rp(t);
+			var lines = services.filter(function (s) { return qty[s.id] > 0; });
+			$('sum-lines').innerHTML = lines.length ? lines.map(function (s) {
+				return '<div class="line"><span>' + WU.esc(s.name) + ' <small style="color:#999">' + qty[s.id] + (s.type === 'kg' ? ' kg' : ' pcs') + '</small></span><b>' + WU.rp(Math.round(qty[s.id] * s.price)) + '</b></div>';
+			}).join('') : '<div class="empty">Belum ada layanan dipilih</div>';
+		}
+		function setQty(id, v) {
+			var s = services.filter(function (x) { return x.id === id; })[0];
+			v = Math.max(0, Number(v) || 0);
+			qty[id] = s.type === 'satuan' ? Math.round(v) : Math.round(v * 10) / 10;
+		}
+
+		$('svc-list').addEventListener('click', function (e) {
+			var b = e.target.closest('button[data-d]'); if (!b) return;
+			var id = Number(b.dataset.id); setQty(id, (qty[id] || 0) + Number(b.dataset.d));
+			var inp = $('svc-list').querySelector('input[data-id="' + id + '"]'); inp.value = qty[id] || ''; total();
+		});
+		$('svc-list').addEventListener('input', function (e) {
+			if (e.target.matches('input[data-id]')) { qty[Number(e.target.dataset.id)] = Math.max(0, Number(e.target.value) || 0); total(); }
+		});
+		$('dtype').addEventListener('change', function () { $('addr-wrap').style.display = this.value === 'jemput' ? '' : 'none'; });
+
+		$('order-form').addEventListener('submit', function (e) {
+			e.preventDefault();
+			var err = $('err'); err.style.display = 'none';
+			var items = services.filter(function (s) { return qty[s.id] > 0; }).map(function (s) { setQty(s.id, qty[s.id]); return { service_id: s.id, qty: qty[s.id] }; }).filter(function (i) { return i.qty > 0; });
+			var body = { client_name: $('name').value, client_phone: $('phone').value, client_address: $('address').value, delivery_type: $('dtype').value, notes: $('notes').value, items: items };
+			var fail = function (m) { err.textContent = m; err.style.display = 'block'; err.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+			if (!items.length) return fail('Pilih minimal satu layanan dan isi jumlahnya.');
+			if (body.client_name.trim().length < 2) return fail('Nama wajib diisi.');
+			if (body.client_phone.replace(/\D/g, '').length < 8) return fail('Nomor HP tidak valid.');
+			if (body.delivery_type === 'jemput' && body.client_address.trim().length < 5) return fail('Alamat jemput wajib diisi.');
+			var btns = [$('submit'), $('submit2')]; btns.forEach(function (b) { b.style.opacity = .6; b.style.pointerEvents = 'none'; });
+			WU.api('/orders', { method: 'POST', body: body }).then(function (r) {
+				WU.saveMe({ name: body.client_name, phone: body.client_phone, address: body.client_address });
+				WU.rememberOrder(r.code);
+				$('done-code').textContent = r.code; $('done-track').href = 'track.html?code=' + r.code;
+				$('form-view').style.display = 'none'; $('done-view').style.display = ''; window.scrollTo(0, 0);
+			}).catch(function (ex) { fail(ex.message); btns.forEach(function (b) { b.style.opacity = 1; b.style.pointerEvents = ''; }); });
+		});
+
+		WU.api('/orders/services').then(function (r) { services = r.data;
+			var pre = Number(new URLSearchParams(location.search).get('svc'));
+			if (pre && services.some(function (s) { return s.id === pre; })) setQty(pre, services.filter(function (s) { return s.id === pre; })[0].type === 'kg' ? 1 : 1);
+			render(); })
+			.catch(function () { $('svc-list').innerHTML = '<p class="center-align">Gagal memuat layanan. Coba muat ulang.</p>'; });
+	})();
+	</script>
+</body>
+</html>

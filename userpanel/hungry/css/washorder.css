@@ -1,0 +1,167 @@
+/* Tema laundry di atas template Hungry: aksen amber (#f2b232) diganti biru */
+:root { --wo: #0ea5e9; --wo-dark: #0284c7; }
+.section-head .underline, .info .icon i, .double-bounce1, .double-bounce2 { background: var(--wo); background-color: var(--wo); }
+.button-default { background: var(--wo); border-color: var(--wo); border-radius: 6px; padding: 10px 18px 8px; font-weight: 600; }
+.button-default:hover { background: var(--wo-dark); }
+.who-we-are .button-default { color: var(--wo); background: #fff; }
+.site-brand a h1 span, .services i, .price .content ul li span, .shop span, .pricing-head, .about-us-foot span { color: var(--wo); }
+.pagination-blog ul .active, .shop-pagination ul .active { border-color: var(--wo); }
+
+.wo-hero { background: linear-gradient(160deg, #0284c7 0%, #0ea5e9 55%, #38bdf8 100%); color: #fff; text-align: center; padding: 100px 20px 46px; }
+.wo-hero .drop { font-size: 54px; line-height: 1; }
+.wo-hero h2 { font-family: 'Playfair Display', serif; font-size: 30px; margin: 10px 0 6px; color: #fff; }
+.wo-hero p { font-size: 14px; opacity: .92; margin: 0 auto; max-width: 380px; }
+.wo-hero .button-default { background: #fff; color: var(--wo-dark); margin: 22px 6px 0; border-color: #fff; }
+.wo-hero .button-default.ghost { background: transparent; color: #fff; }
+
+.wo-steps .row { margin-bottom: 0; }
+.wo-steps .col { text-align: center; padding: 14px 6px; }
+.wo-steps .num { width: 42px; height: 42px; border-radius: 50%; background: var(--wo); color: #fff; font-weight: 700; font-size: 18px; line-height: 42px; margin: 0 auto 8px; }
+.wo-steps h6 { margin: 0 0 4px; font-weight: 700; color: #333; font-size: 13px; }
+
+.wo-price { display: flex; justify-content: space-between; align-items: center; padding: 13px 0; border-bottom: 1px dashed #e3e3e3; font-size: 14px; }
+.wo-price b { color: var(--wo-dark); }
+.wo-price small { display: block; color: #999; font-size: 11px; }
+
+/* Form pesan */
+.wo-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0, 0, 0, .04); }
+.wo-card h5 { margin: 0 0 10px; font-size: 15px; font-weight: 700; color: #333; }
+.wo-svc { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f1f1f1; }
+.wo-svc:last-child { border-bottom: 0; }
+.wo-svc .nm { flex: 1; font-size: 14px; color: #333; font-weight: 600; }
+.wo-svc .nm small { display: block; font-weight: 400; color: #999; font-size: 11px; }
+.wo-qty { display: flex; align-items: center; gap: 4px; }
+.wo-qty button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #ddd; background: #fff; font-size: 18px; line-height: 1; color: var(--wo-dark); cursor: pointer; padding: 0; }
+.wo-qty input { width: 56px !important; height: 34px !important; text-align: center; margin: 0 !important; padding: 0 !important; border: 1px solid #ddd !important; border-radius: 6px; font-size: 14px !important; }
+.wo-total { position: sticky; bottom: 0; background: #fff; border-top: 2px solid var(--wo); padding: 12px 14px; margin: 0 -14px; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+.wo-total b { font-size: 18px; color: var(--wo-dark); }
+.wo-field label { display: block; font-size: 12px; font-weight: 600; margin: 10px 0 4px; color: #555; }
+.wo-field input, .wo-field textarea, .wo-field select { width: 100%; border: 1px solid #ddd !important; border-radius: 6px !important; padding: 0 10px !important; box-sizing: border-box; background: #fff; }
+.wo-field select { display: block; height: 42px; }
+.wo-field textarea { padding: 10px !important; min-height: 70px; }
+.wo-err { background: #fef2f2; color: #b91c1c; border-radius: 6px; padding: 9px 12px; margin: 10px 0; font-size: 13px; display: none; }
+
+/* Sukses / tracking */
+.wo-done { text-align: center; padding: 18px 10px; }
+.wo-done .check { font-size: 56px; color: #16a34a; }
+.wo-codebox { display: inline-block; font-size: 28px; font-weight: 800; letter-spacing: 2px; color: var(--wo-dark); background: #e0f2fe; padding: 8px 18px; border-radius: 10px; margin: 10px 0; }
+.wo-badge { display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 999px; background: #fef3c7; color: #92400e; }
+.wo-badge.s-Ditugaskan, .wo-badge.s-Dicuci { background: #e0f2fe; color: #075985; }
+.wo-badge.s-Siap, .wo-badge.s-Selesai { background: #dcfce7; color: #166534; }
+.wo-badge.s-Dibatalkan { background: #fee2e2; color: #991b1b; }
+.wo-progress { display: flex; justify-content: space-between; margin: 18px 0 8px; position: relative; }
+.wo-progress:before { content: ""; position: absolute; top: 13px; left: 8%; right: 8%; height: 3px; background: #e5e7eb; }
+.wo-progress .st { position: relative; text-align: center; flex: 1; font-size: 10px; color: #9ca3af; }
+.wo-progress .dot { width: 28px; height: 28px; border-radius: 50%; background: #e5e7eb; color: #fff; margin: 0 auto 4px; line-height: 28px; font-size: 13px; position: relative; }
+.wo-progress .st.on { color: #333; font-weight: 600; }
+.wo-progress .st.on .dot { background: var(--wo); }
+.wo-progress .st.now .dot { box-shadow: 0 0 0 5px #bae6fd; }
+.wo-log { list-style: none; margin: 0; padding: 0 0 0 10px; border-left: 2px solid #e5e7eb; }
+.wo-log li { position: relative; padding: 0 0 10px 14px; font-size: 13px; }
+.wo-log li:before { content: ""; position: absolute; left: -16px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--wo); }
+.wo-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; }
+.wo-orderlink { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f1f1; color: #333; font-size: 14px; }
+.wo-toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 20px; border-radius: 8px; z-index: 9999; font-size: 13px; }
+.wo-tabs { display: flex; background: #f1f5f9; border-radius: 8px; padding: 3px; margin-bottom: 12px; }
+.wo-tabs button { flex: 1; border: 0; background: none; padding: 10px; border-radius: 6px; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; }
+.wo-tabs button.on { background: #fff; color: #111; box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+
+/* ===== Landing v2 (responsif, desktop-friendly) ===== */
+.wo-wrap { max-width: 1120px; margin: 0 auto; padding: 0 18px; }
+.wo-hero2 { background: linear-gradient(135deg, #075985 0%, #0284c7 45%, #38bdf8 100%); color: #fff; padding: 110px 0 70px; position: relative; overflow: hidden; }
+.wo-hero2:before, .wo-hero2:after { content: ""; position: absolute; border-radius: 50%; background: rgba(255,255,255,.08); }
+.wo-hero2:before { width: 420px; height: 420px; right: -120px; top: -120px; }
+.wo-hero2:after { width: 260px; height: 260px; left: -90px; bottom: -110px; }
+.wo-hero2 .wo-wrap { display: flex; align-items: center; gap: 40px; position: relative; z-index: 1; }
+.wo-hero2 .txt { flex: 1.2; }
+.wo-hero2 .tag { display: inline-block; background: rgba(255,255,255,.18); padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-bottom: 14px; }
+.wo-hero2 h2 { font-family: 'Playfair Display', serif; font-size: 44px; line-height: 1.15; margin: 0 0 14px; color: #fff; }
+.wo-hero2 p { font-size: 16px; line-height: 1.6; opacity: .95; max-width: 520px; margin: 0 0 24px; }
+.wo-hero2 .cta .button-default { margin: 0 10px 10px 0; font-size: 15px; padding: 13px 24px 11px; background: #fff; color: #075985; border-color: #fff; }
+.wo-hero2 .cta .button-default.ghost { background: transparent; color: #fff; }
+.wo-hero2 .perks { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 10px; font-size: 13px; }
+.wo-hero2 .perks i { color: #bae6fd; margin-right: 6px; }
+.wo-trackcard { flex: .8; background: #fff; color: #333; border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(2,6,23,.25); min-width: 300px; }
+.wo-trackcard h5 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+.wo-trackcard p { color: #777; font-size: 13px; margin: 0 0 14px; opacity: 1; }
+.wo-trackcard input { height: 46px !important; border: 1px solid #ddd !important; border-radius: 8px !important; padding: 0 12px !important; margin: 0 !important; box-sizing: border-box; text-transform: uppercase; }
+.wo-trackcard .button-default { width: 100%; margin: 10px 0 0; text-align: center; box-sizing: border-box; font-size: 14px; }
+.wo-sec { padding: 64px 0; }
+.wo-sec.alt { background: #f4f8fb; }
+.wo-sec h3.title { text-align: center; font-family: 'Playfair Display', serif; font-size: 30px; margin: 0 0 6px; color: #0f172a; }
+.wo-sec p.sub { text-align: center; color: #777; margin: 0 0 34px; font-size: 14px; }
+.wo-grid { display: grid; gap: 18px; }
+.wo-grid.g4 { grid-template-columns: repeat(4, 1fr); }
+.wo-grid.g3 { grid-template-columns: repeat(3, 1fr); }
+.wo-feat { background: #fff; border: 1px solid #e8eef3; border-radius: 14px; padding: 24px 20px; text-align: center; transition: transform .2s, box-shadow .2s; }
+.wo-feat:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(2,132,199,.12); }
+.wo-feat .ic { width: 58px; height: 58px; border-radius: 16px; background: #e0f2fe; color: #0284c7; font-size: 24px; line-height: 58px; margin: 0 auto 14px; }
+.wo-feat h6 { font-size: 15px; font-weight: 700; margin: 0 0 6px; color: #0f172a; }
+.wo-feat p { margin: 0; font-size: 13px; color: #6b7280; line-height: 1.55; }
+.wo-svc-card { background: #fff; border: 1px solid #e8eef3; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; }
+.wo-svc-card .top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.wo-svc-card .ic { width: 46px; height: 46px; border-radius: 12px; background: #e0f2fe; color: #0284c7; text-align: center; line-height: 46px; font-size: 20px; flex: none; }
+.wo-svc-card h6 { margin: 0; font-size: 15px; font-weight: 700; color: #0f172a; }
+.wo-svc-card .price { font-size: 22px; font-weight: 800; color: #0284c7; margin: 4px 0 14px; }
+.wo-svc-card .price small { font-size: 12px; color: #9ca3af; font-weight: 600; }
+.wo-svc-card a { margin-top: auto; text-align: center; border: 1px solid #0ea5e9; color: #0284c7; border-radius: 8px; padding: 9px; font-weight: 600; font-size: 13px; }
+.wo-svc-card a:hover { background: #0ea5e9; color: #fff; }
+.wo-step { text-align: center; position: relative; }
+.wo-step .num { width: 54px; height: 54px; border-radius: 50%; background: #0ea5e9; color: #fff; font-weight: 800; font-size: 22px; line-height: 54px; margin: 0 auto 12px; box-shadow: 0 0 0 6px #e0f2fe; }
+.wo-step h6 { margin: 0 0 4px; font-weight: 700; font-size: 15px; color: #0f172a; }
+.wo-step p { margin: 0; font-size: 13px; color: #6b7280; }
+.wo-faq details { background: #fff; border: 1px solid #e8eef3; border-radius: 10px; padding: 16px 18px; margin-bottom: 10px; max-width: 760px; margin-left: auto; margin-right: auto; }
+.wo-faq summary { font-weight: 600; cursor: pointer; font-size: 14px; color: #0f172a; }
+.wo-faq details p { margin: 10px 0 0; font-size: 13px; color: #6b7280; line-height: 1.6; }
+.wo-band { background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff; text-align: center; padding: 48px 18px; }
+.wo-band h3 { font-family: 'Playfair Display', serif; font-size: 28px; margin: 0 0 8px; color: #fff; }
+.wo-band .button-default { background: #fff; color: #075985; border-color: #fff; margin-top: 16px; padding: 13px 28px 11px; font-size: 15px; }
+.wo-foot { background: #0f172a; color: #94a3b8; padding: 34px 18px; text-align: center; font-size: 13px; }
+.wo-foot b { color: #fff; font-size: 18px; font-family: 'Playfair Display', serif; }
+.wo-foot a { color: #7dd3fc; margin: 0 10px; }
+.wo-mine { max-width: 640px; margin: 0 auto; }
+
+/* Form pesan 2 kolom di desktop */
+.wo-order { display: grid; grid-template-columns: 1fr; gap: 18px; }
+.wo-summary { display: none; }
+@media (min-width: 992px) {
+  .wo-order { grid-template-columns: 1.4fr 1fr; align-items: start; }
+  .wo-summary { display: block; position: sticky; top: 84px; }
+  .wo-total.mobile { display: none; }
+  .wo-order-wrap { max-width: 1040px; margin: 0 auto; padding: 0 18px; }
+}
+.wo-summary .line { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px dashed #eee; }
+.wo-summary .grand { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; font-size: 14px; }
+.wo-summary .grand b { font-size: 22px; color: #0284c7; }
+.wo-summary .empty { color: #9ca3af; font-size: 13px; text-align: center; padding: 14px 0; }
+
+@media (max-width: 991px) {
+  .wo-hero2 { padding: 96px 0 44px; }
+  .wo-hero2 .wo-wrap { flex-direction: column; align-items: stretch; gap: 26px; }
+  .wo-hero2 h2 { font-size: 32px; }
+  .wo-trackcard { min-width: 0; }
+  .wo-grid.g4 { grid-template-columns: repeat(2, 1fr); }
+  .wo-grid.g3 { grid-template-columns: 1fr; }
+  .wo-sec { padding: 42px 0; }
+}
+
+/* Ilustrasi chibi layanan */
+.wo-svc-card .pic { background: #f4f8fb; border-radius: 12px; margin: -6px -6px 12px; padding: 6px; text-align: center; }
+.wo-svc-card .pic img { width: 100%; max-width: 190px; height: auto; display: block; margin: 0 auto; transition: transform .25s; }
+.wo-svc-card:hover .pic img { transform: scale(1.06) rotate(-2deg); }
+.wo-svc-card h6 { margin: 0 0 2px; font-size: 15px; font-weight: 700; color: #0f172a; }
+.wo-svc-card .price { margin: 2px 0 12px; }
+.wo-svc .thumb { width: 56px; height: 56px; flex: none; border-radius: 14px; }
+
+/* Foto katalog layanan */
+.wo-svc-card .pic { padding: 0; margin: 0 0 12px; background: none; overflow: hidden; border-radius: 12px; aspect-ratio: 1 / 1; }
+.wo-svc-card .pic img { width: 100%; max-width: none; height: 100%; object-fit: cover; border-radius: 12px; }
+.wo-svc-card:hover .pic img { transform: scale(1.05); }
+.wo-svc .thumb { object-fit: cover; }
+
+/* Login Staf: pojok kiri atas, di samping tombol menu */
+.wo-staff { position: absolute; left: 54px; top: 17px; z-index: 100; display: inline-flex; align-items: center; gap: 6px; height: 31px; padding: 0 12px; border-radius: 999px;
+	background: #e0f2fe; color: #0284c7 !important; font-size: 12px; font-weight: 700; line-height: 1; text-decoration: none; white-space: nowrap; }
+.wo-staff:hover { background: #0ea5e9; color: #fff !important; }
+.wo-staff i { font-size: 13px; }
+@media (max-width: 420px) { .wo-staff { left: 50px; padding: 0 10px; } .wo-staff span { display: none; } .wo-staff .lbl { display: none; } .wo-staff { width: 31px; padding: 0; justify-content: center; } }

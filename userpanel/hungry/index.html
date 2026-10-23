@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<title>Wash Order - Laundry Antar Jemput</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1 user-scalable=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="stylesheet" href="css/materialize.css">
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/owl.carousel.css">
+	<link rel="stylesheet" href="css/owl.theme.css">
+	<link rel="stylesheet" href="css/owl.transitions.css">
+	<link rel="stylesheet" href="css/fakeLoader.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/washorder.css">
+	<link rel="shortcut icon" href="img/favicon.png">
+</head>
+<body>
+	<div id="wo-shell"></div>
+
+	<!-- hero -->
+	<section class="wo-hero2">
+		<div class="wo-wrap">
+			<div class="txt">
+				<span class="tag"><i class="fa fa-truck"></i> Laundry antar-jemput</span>
+				<h2>Cucian beres,<br>hidup lebih tenang.</h2>
+				<p>Pesan online tanpa daftar dan tanpa password. Kami jemput, cuci, lalu antar kembali. Pantau setiap tahap cucian Anda kapan saja.</p>
+				<div class="cta">
+					<a href="order.html" class="button-default">Pesan Sekarang</a>
+					<a href="#harga" class="button-default ghost">Lihat Harga</a>
+				</div>
+				<div class="perks">
+					<span><i class="fa fa-check-circle"></i>Tanpa daftar akun</span>
+					<span><i class="fa fa-check-circle"></i>Lacak status real-time</span>
+					<span><i class="fa fa-check-circle"></i>Kiloan, sepatu &amp; tas</span>
+				</div>
+			</div>
+			<div class="wo-trackcard">
+				<h5><i class="fa fa-search" style="color:#0ea5e9"></i> Lacak pesanan</h5>
+				<p>Masukkan kode pesanan yang Anda terima.</p>
+				<form id="quick-track">
+					<input id="quick-code" type="text" placeholder="Contoh: WO-AB3XK" autocomplete="off">
+					<button class="button-default" type="submit">Cek Status</button>
+				</form>
+				<div style="text-align:center;margin-top:14px;font-size:12px;color:#888">atau <a href="track.html" style="color:#0284c7;font-weight:600">cari dengan nomor HP</a></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- pesanan saya -->
+	<section class="wo-sec" id="mine" style="display:none;padding-bottom:0">
+		<div class="wo-wrap">
+			<h3 class="title">Pesanan Saya</h3>
+			<p class="sub">Pesanan yang pernah dibuat dari perangkat ini</p>
+			<div class="wo-mine wo-card" id="my-orders"></div>
+		</div>
+	</section>
+
+	<!-- keunggulan -->
+	<section class="wo-sec">
+		<div class="wo-wrap">
+			<h3 class="title">Kenapa Wash Order?</h3>
+			<p class="sub">Dibuat supaya urusan cucian jadi mudah</p>
+			<div class="wo-grid g4">
+				<div class="wo-feat"><div class="ic"><i class="fa fa-mobile"></i></div><h6>Pesan dari HP</h6><p>Pilih layanan, isi berat, kirim. Tidak perlu daftar atau ingat password.</p></div>
+				<div class="wo-feat"><div class="ic"><i class="fa fa-truck"></i></div><h6>Antar &amp; Jemput</h6><p>Cucian dijemput ke alamat Anda, atau antar sendiri kalau lebih praktis.</p></div>
+				<div class="wo-feat"><div class="ic"><i class="fa fa-map-signs"></i></div><h6>Status Transparan</h6><p>Dari diterima, dicuci, sampai siap diambil &mdash; semuanya bisa dipantau.</p></div>
+				<div class="wo-feat"><div class="ic"><i class="fa fa-tags"></i></div><h6>Harga Jelas</h6><p>Tarif per kg atau per pcs tertera di bawah. Rincian tagihan selalu terlihat.</p></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- layanan & harga -->
+	<section class="wo-sec alt" id="harga">
+		<div class="wo-wrap">
+			<h3 class="title">Layanan &amp; Harga</h3>
+			<p class="sub">Pilih layanan, lalu klik pesan</p>
+			<div id="svc-cards" class="wo-grid g4"><p style="grid-column:1/-1;text-align:center">Memuat...</p></div>
+		</div>
+	</section>
+
+	<!-- cara kerja -->
+	<section class="wo-sec">
+		<div class="wo-wrap">
+			<h3 class="title">Cara Kerja</h3>
+			<p class="sub">Empat langkah, selesai</p>
+			<div class="wo-grid g4">
+				<div class="wo-step"><div class="num">1</div><h6>Pilih layanan</h6><p>Tentukan jenis cucian dan perkiraan berat.</p></div>
+				<div class="wo-step"><div class="num">2</div><h6>Kirim pesanan</h6><p>Isi nama, nomor HP, dan alamat jemput. Anda dapat kode pesanan.</p></div>
+				<div class="wo-step"><div class="num">3</div><h6>Kami cuci</h6><p>Admin menugaskan washer, cucian Anda diproses.</p></div>
+				<div class="wo-step"><div class="num">4</div><h6>Terima &amp; bayar</h6><p>Cucian siap diambil atau diantar, pembayaran dicatat admin.</p></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- faq -->
+	<section class="wo-sec alt wo-faq">
+		<div class="wo-wrap">
+			<h3 class="title">Pertanyaan Umum</h3>
+			<p class="sub">&nbsp;</p>
+			<details><summary>Apakah saya perlu membuat akun?</summary><p>Tidak. Cukup isi nama dan nomor HP saat memesan. Simpan kode pesanan untuk melacak statusnya.</p></details>
+			<details><summary>Bagaimana kalau berat cucian berbeda dari perkiraan saya?</summary><p>Berat final ditimbang saat cucian diterima. Total tagihan akan disesuaikan dan bisa Anda lihat di halaman lacak pesanan.</p></details>
+			<details><summary>Bagaimana cara melacak pesanan?</summary><p>Buka halaman Lacak Pesanan, lalu masukkan kode pesanan atau nomor HP yang dipakai saat memesan.</p></details>
+			<details><summary>Bagaimana cara membayar?</summary><p>Pembayaran (tunai, transfer, atau QRIS) dicatat oleh admin saat cucian diantar atau diambil.</p></details>
+		</div>
+	</section>
+
+	<!-- cta -->
+	<section class="wo-band">
+		<h3>Siap cuci hari ini?</h3>
+		<p style="opacity:.92;margin:0">Pesan sekarang dan biarkan kami yang urus sisanya.</p>
+		<a href="order.html" class="button-default">Pesan Sekarang</a>
+	</section>
+
+	<div class="wo-foot">
+		<b>WashOrder</b>
+		<p style="margin:8px 0 14px">Laundry kiloan, satuan, sepatu &amp; tas. Cepat, bersih, wangi.</p>
+		<a href="order.html">Pesan</a><a href="track.html">Lacak</a><a href="#harga">Harga</a>
+	</div>
+
+	<div id="fakeLoader"></div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/materialize.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/fakeLoader.min.js"></script>
+	<script src="js/wo-user.js"></script>
+	<script>WU.shell();</script>
+	<script src="js/main.js"></script>
+	<script>
+	function svcIcon(s) {
+		var n = s.name.toLowerCase();
+		if (n.indexOf('safety') > -1) return 'fa-shield';
+		if (n.indexOf('sepatu') > -1) return 'fa-star';
+		if (n.indexOf('tas') > -1) return 'fa-shopping-bag';
+		if (n.indexOf('steam') > -1) return 'fa-cloud';
+		if (n.indexOf('lipat') > -1) return 'fa-th-large';
+		return 'fa-tint';
+	}
+	WU.api('/orders/services').then(function (r) {
+		document.getElementById('svc-cards').innerHTML = r.data.length ? r.data.map(function (s) {
+			return '<div class="wo-svc-card"><div class="pic"><img src="' + WU.svcImg(s.name) + '" alt="' + WU.esc(s.name) + '" loading="lazy"></div><h6>' + WU.esc(s.name) + '</h6>' +
+				'<div class="price">' + WU.rp(s.price) + ' <small>/ ' + (s.type === 'kg' ? 'kg' : 'pcs') + '</small></div>' +
+				'<a href="order.html?svc=' + s.id + '">Pesan layanan ini</a></div>';
+		}).join('') : '<p style="grid-column:1/-1;text-align:center">Belum ada layanan.</p>';
+	}).catch(function () { document.getElementById('svc-cards').innerHTML = '<p style="grid-column:1/-1;text-align:center">Gagal memuat harga.</p>'; });
+
+	document.getElementById('quick-track').addEventListener('submit', function (e) {
+		e.preventDefault();
+		var v = document.getElementById('quick-code').value.trim();
+		location.href = 'track.html' + (v ? '?code=' + encodeURIComponent(v) : '');
+	});
+
+	var mine = WU.myOrders();
+	if (mine.length) {
+		document.getElementById('mine').style.display = '';
+		Promise.all(mine.slice(0, 5).map(function (c) { return WU.api('/orders/track/' + c).then(function (r) { return r.data; }).catch(function () { return null; }); })).then(function (list) {
+			document.getElementById('my-orders').innerHTML = list.filter(Boolean).map(function (o) {
+				return '<a class="wo-orderlink" href="track.html?code=' + o.code + '"><span><b>' + o.code + '</b><br><small>' + WU.date(o.created_at) + ' · ' + WU.rp(o.total) + '</small></span>' + WU.badge(o.status) + '</a>';
+			}).join('');
+		});
+	}
+	</script>
+</body>
+</html>

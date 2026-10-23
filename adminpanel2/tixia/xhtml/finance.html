@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wash Order | Keuangan</title>
+<link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+<link href="./css/style.css" rel="stylesheet">
+<link href="./css/wo.css" rel="stylesheet">
+</head>
+<body>
+<script src="./js/wo-admin.js"></script>
+<script>WO.begin({ title: 'Kas Masuk / Keluar', active: 'finance',
+    actions: '<button class="btn btn-sm btn-success btn-round" data-add="in">+ Pemasukan</button> <button class="btn btn-sm btn-danger btn-round" data-add="out">+ Pengeluaran</button>' });</script>
+
+<div class="row clearfix">
+    <div class="col-md-4"><div class="widget-stat card"><div class="card-body p-4"><div class="media ai-icon"><span class="mr-3 bgl-success text-success"><i class="fa fa-arrow-down"></i></span><div class="media-body"><p class="mb-1">Total Pemasukan</p><h4 class="mb-0" id="s-in">-</h4></div></div></div></div></div>
+    <div class="col-md-4"><div class="widget-stat card"><div class="card-body p-4"><div class="media ai-icon"><span class="mr-3 bgl-danger text-danger"><i class="fa fa-arrow-up"></i></span><div class="media-body"><p class="mb-1">Total Pengeluaran</p><h4 class="mb-0" id="s-out">-</h4></div></div></div></div></div>
+    <div class="col-md-4"><div class="widget-stat card"><div class="card-body p-4"><div class="media ai-icon"><span class="mr-3 bgl-info text-info"><i class="fa fa-balance-scale"></i></span><div class="media-body"><p class="mb-1">Saldo (periode)</p><h4 class="mb-0" id="s-net">-</h4></div></div></div></div></div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-2 mb-2"><select id="f-type" class="form-control form-control-sm"><option value="">Semua</option><option value="in">Pemasukan</option><option value="out">Pengeluaran</option></select></div>
+                    <div class="col-md-3 mb-2"><input type="date" id="f-from" class="form-control form-control-sm" title="Dari tanggal"></div>
+                    <div class="col-md-3 mb-2"><input type="date" id="f-to" class="form-control form-control-sm" title="Sampai tanggal"></div>
+                    <div class="col-md-4 mb-2"><input id="f-q" class="form-control form-control-sm" placeholder="Cari keterangan / kategori"></div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th class="text-right">Nominal</th><th></th></tr></thead>
+                    <tbody id="rows"><tr><td colspan="5" class="wo-empty">Memuat...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="card"><div class="card-header"><h4 class="card-title">Per Kategori</h4></div><div class="card-body" id="cats"></div></div>
+    </div>
+</div>
+
+<div class="modal fade" id="txmodal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <form id="tx-form">
+    <div class="modal-header"><h5 class="modal-title" id="tx-title">Transaksi</h5><button type="button" class="close" data-dismiss="modal">&times;</button></div>
+    <div class="modal-body">
+        <div class="form-group"><label>Kategori</label>
+            <input class="form-control" id="tx-cat" list="cat-list" required>
+            <datalist id="cat-list"></datalist></div>
+        <div class="form-group"><label>Nominal (Rp)</label><input type="number" min="1" class="form-control" id="tx-amount" required></div>
+        <div class="form-group"><label>Tanggal</label><input type="date" class="form-control" id="tx-date"></div>
+        <div class="form-group"><label>Keterangan</label><input class="form-control" id="tx-desc"></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button><button class="btn btn-primary" type="submit">Simpan</button></div>
+    </form>
+</div></div></div>
+
+<script>WO.end();</script>
+<script>
+WO.ready(function () {
+    var $ = window.jQuery, txType = 'out', qTimer;
+    var CATS = { out: ['Deterjen & pewangi', 'Listrik & air', 'Gaji washer', 'Bensin / transport', 'Perawatan mesin', 'Sewa tempat', 'Lain-lain'], in: ['Modal', 'Lain-lain'] };
+
+    function load() {
+        var qs = ['type=' + v('f-type'), 'from=' + v('f-from'), 'to=' + v('f-to'), 'q=' + encodeURIComponent(v('f-q'))].join('&');
+        WO.api('/admin/finance/transactions?' + qs).then(function (r) {
+            document.getElementById('s-in').textContent = WO.rp(r.totals.income);
+            document.getElementById('s-out').textContent = WO.rp(r.totals.expense);
+            var net = r.totals.income - r.totals.expense, n = document.getElementById('s-net');
+            n.textContent = WO.rp(net); n.className = 'mb-0 ' + (net >= 0 ? 'text-success' : 'text-danger');
+            document.getElementById('rows').innerHTML = r.data.length ? r.data.map(function (t) {
+                return '<tr><td><small>' + WO.date(t.created_at) + '</small></td><td>' + WO.esc(t.category) + (t.method ? ' <small class="text-muted">(' + WO.esc(t.method) + ')</small>' : '') +
+                    '</td><td>' + WO.esc(t.description || '') + '</td>' +
+                    '<td class="text-right text-nowrap ' + (t.type === 'in' ? 'text-success' : 'text-danger') + '"><b>' + (t.type === 'in' ? '+ ' : '- ') + WO.rp(t.amount) + '</b></td>' +
+                    '<td class="text-right">' + (t.order_id ? '<a href="orders.html?open=' + t.order_id + '" class="btn btn-sm btn-outline-info" title="Lihat pesanan"><i class="fa fa-link"></i></a>'
+                        : '<button class="btn btn-sm btn-outline-danger" data-del="' + t.id + '" title="Hapus"><i class="fa fa-trash"></i></button>') + '</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="wo-empty">Belum ada transaksi</td></tr>';
+            document.getElementById('cats').innerHTML = r.categories.length ? r.categories.map(function (c) {
+                return '<div class="d-flex justify-content-between mb-2"><span><i class="fa fa-circle ' + (c.type === 'in' ? 'text-success' : 'text-danger') + '" style="font-size:8px"></i> ' + WO.esc(c.category) + '</span><b>' + WO.rp(c.total) + '</b></div>';
+            }).join('') : '<div class="wo-empty">-</div>';
+        }).catch(WO.fail);
+    }
+    function v(id) { return document.getElementById(id).value; }
+
+    ['f-type', 'f-from', 'f-to'].forEach(function (id) { document.getElementById(id).addEventListener('change', load); });
+    document.getElementById('f-q').addEventListener('input', function () { clearTimeout(qTimer); qTimer = setTimeout(load, 300); });
+
+    document.addEventListener('click', function (e) {
+        var add = e.target.closest('[data-add]'), del = e.target.closest('[data-del]');
+        if (add) {
+            txType = add.dataset.add;
+            document.getElementById('tx-form').reset();
+            document.getElementById('tx-title').textContent = txType === 'in' ? 'Catat Pemasukan Lain' : 'Catat Pengeluaran';
+            document.getElementById('cat-list').innerHTML = CATS[txType].map(function (c) { return '<option value="' + c + '">'; }).join('');
+            document.getElementById('tx-date').value = new Date().toISOString().slice(0, 10);
+            $('#txmodal').modal('show');
+        } else if (del && confirm('Hapus transaksi ini?')) {
+            WO.api('/admin/finance/transactions/' + del.dataset.del, { method: 'DELETE' }).then(function (r) { WO.toast(r.message); load(); }).catch(WO.fail);
+        }
+    });
+    document.getElementById('tx-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        WO.api('/admin/finance/transactions', { method: 'POST', body: { type: txType, category: v('tx-cat'), amount: Number(v('tx-amount')), date: v('tx-date'), description: v('tx-desc') } })
+            .then(function (r) { $('#txmodal').modal('hide'); WO.toast(r.message); load(); }).catch(WO.fail);
+    });
+    load();
+});
+</script>
+</body>
+</html>
