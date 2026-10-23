@@ -1,4 +1,4 @@
--- Skema Database Wash Order
+-- Skema Database Wash Order. Waktu disimpan dalam WIB (UTC+7) agar sama di server lokal maupun Vercel/Turso.
 CREATE TABLE IF NOT EXISTS admins (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS workers (
     username TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     active INTEGER NOT NULL DEFAULT 1,
-    created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+    created_at TEXT NOT NULL DEFAULT (datetime('now','+7 hours'))
 );
 
 CREATE TABLE IF NOT EXISTS services (
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS orders (
     washer_id INTEGER,
     total INTEGER NOT NULL DEFAULT 0,
     paid INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+    created_at TEXT NOT NULL DEFAULT (datetime('now','+7 hours')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now','+7 hours')),
     FOREIGN KEY(washer_id) REFERENCES workers(id)
 );
 
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS order_logs (
     status TEXT NOT NULL,
     actor TEXT,
     note TEXT,
-    created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+    created_at TEXT NOT NULL DEFAULT (datetime('now','+7 hours')),
     FOREIGN KEY(order_id) REFERENCES orders(id)
 );
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     method TEXT,
     description TEXT,
     order_id INTEGER,
-    created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+    created_at TEXT NOT NULL DEFAULT (datetime('now','+7 hours')),
     FOREIGN KEY(order_id) REFERENCES orders(id)
 );
 
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     token TEXT PRIMARY KEY,
     role TEXT NOT NULL,
     user_id INTEGER NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+    created_at TEXT NOT NULL DEFAULT (datetime('now','+7 hours'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);

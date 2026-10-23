@@ -12,3 +12,9 @@ __MACOSX/
 userpanel/documentation/
 adminpanel2/tixia/xhtml/scss/
 adminpanel2/tixia/xhtml/**/*.map
+
+# rahasia & hasil build
+.env
+.env.*
+.vercel/
+public/

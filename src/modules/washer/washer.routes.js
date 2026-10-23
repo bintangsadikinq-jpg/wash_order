@@ -22,7 +22,7 @@ router.get('/tasks', wrap(async (req, res) => {
     const done = await withItems(await all(
         `SELECT ${FIELDS} FROM orders o WHERE o.washer_id = ? AND o.status IN ('Siap','Selesai') ORDER BY o.updated_at DESC LIMIT 15`, [req.user.id]));
     const stat = await get(`SELECT
-        SUM(CASE WHEN status IN ('Siap','Selesai') AND date(updated_at) = date('now','localtime') THEN 1 ELSE 0 END) AS done_today,
+        SUM(CASE WHEN status IN ('Siap','Selesai') AND date(updated_at) = date('now','+7 hours') THEN 1 ELSE 0 END) AS done_today,
         SUM(CASE WHEN status IN ('Siap','Selesai') THEN 1 ELSE 0 END) AS done_total
         FROM orders WHERE washer_id = ?`, [req.user.id]);
     res.json({ active, done, stats: { done_today: stat.done_today || 0, done_total: stat.done_total || 0 } });

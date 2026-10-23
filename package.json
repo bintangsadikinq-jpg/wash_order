@@ -5,11 +5,15 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "db:setup": "node setup_db.js"
+    "db:setup": "node setup_db.js",
+    "build": "node scripts/prepare-public.js",
+    "start:turso": "node --env-file=.env.turso src/server.js",
+    "db:setup:turso": "node --env-file=.env.turso setup_db.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "@libsql/client": "^0.18.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
   },
   "engines": {
     "node": ">=22.13"

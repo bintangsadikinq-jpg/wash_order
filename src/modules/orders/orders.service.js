@@ -11,7 +11,7 @@ async function logStatus(orderId, status, actor, note) {
 }
 
 async function setStatus(orderId, status, actor, note, extra = {}) {
-    const cols = ['status = ?', "updated_at = datetime('now','localtime')"];
+    const cols = ['status = ?', "updated_at = datetime('now','+7 hours')"];
     const vals = [status];
     for (const [k, v] of Object.entries(extra)) { cols.push(`${k} = ?`); vals.push(v); }
     await run(`UPDATE orders SET ${cols.join(', ')} WHERE id = ?`, [...vals, orderId]);
@@ -47,7 +47,7 @@ async function saveItems(orderId, rows) {
         await run('INSERT INTO order_items (order_id, service_id, service_name, type, unit_price, qty, subtotal) VALUES (?,?,?,?,?,?,?)',
             [orderId, r.service_id, r.service_name, r.type, r.unit_price, r.qty, r.subtotal]);
     const total = rows.reduce((a, r) => a + r.subtotal, 0);
-    await run("UPDATE orders SET total = ?, updated_at = datetime('now','localtime') WHERE id = ?", [total, orderId]);
+    await run("UPDATE orders SET total = ?, updated_at = datetime('now','+7 hours') WHERE id = ?", [total, orderId]);
     return total;
 }
 

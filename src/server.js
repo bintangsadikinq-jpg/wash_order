@@ -32,12 +32,16 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500).json({ error: err.status ? err.message : 'Terjadi kesalahan pada server.' });
 });
 
-const PORT = process.env.PORT || 3000;
-store.init().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Wash Order berjalan di http://localhost:${PORT}`);
-        console.log(`  Pemesan : http://localhost:${PORT}/user/`);
-        console.log(`  Washer  : http://localhost:${PORT}/washer/`);
-        console.log(`  Admin   : http://localhost:${PORT}/admin/login.html`);
-    });
-}).catch(e => { console.error(e); process.exit(1); });
+// Vercel (serverless) memakai app ini lewat api/index.js; lokal: node src/server.js
+module.exports = app;
+
+if (require.main === module) {
+    const PORT = process.env.PORT || 3000;
+    store.init().then(() => {
+        app.listen(PORT, () => {
+            console.log(`Wash Order berjalan di http://localhost:${PORT}  (database: ${store.REMOTE ? 'Turso' : 'file lokal'})`);
+            console.log(`  Pemesan : http://localhost:${PORT}/user/`);
+            console.log(`  Staf    : http://localhost:${PORT}/login`);
+        });
+    }).catch(e => { console.error(e); process.exit(1); });
+}

@@ -17,13 +17,13 @@ router.get('/dashboard', wrap(async (req, res) => {
     byStatus.forEach(r => { counts[r.status] = r.n; });
 
     const sum = (type, where) => get(`SELECT COALESCE(SUM(amount),0) AS v FROM transactions WHERE type = ? AND ${where}`, [type]);
-    const today = "date(created_at) = date('now','localtime')";
-    const month = "strftime('%Y-%m', created_at) = strftime('%Y-%m','now','localtime')";
+    const today = "date(created_at) = date('now','+7 hours')";
+    const month = "strftime('%Y-%m', created_at) = strftime('%Y-%m','now','+7 hours')";
     const [inToday, outToday, inMonth, outMonth] = await Promise.all([sum('in', today), sum('out', today), sum('in', month), sum('out', month)]);
 
     const receivable = await get("SELECT COALESCE(SUM(total - paid),0) AS v FROM orders WHERE status != 'Dibatalkan' AND total > paid");
     const series = await all(`
-        WITH RECURSIVE d(day) AS (SELECT date('now','localtime','-6 days') UNION ALL SELECT date(day,'+1 day') FROM d WHERE day < date('now','localtime'))
+        WITH RECURSIVE d(day) AS (SELECT date('now','+7 hours','-6 days') UNION ALL SELECT date(day,'+1 day') FROM d WHERE day < date('now','+7 hours'))
         SELECT day,
             COALESCE((SELECT SUM(amount) FROM transactions WHERE type='in' AND date(created_at)=day),0) AS income,
             COALESCE((SELECT SUM(amount) FROM transactions WHERE type='out' AND date(created_at)=day),0) AS expense
@@ -117,7 +117,7 @@ router.post('/orders/:id/pay', wrap(async (req, res) => {
     const method = ['Tunai', 'Transfer', 'QRIS'].includes(req.body.method) ? req.body.method : 'Tunai';
     await run("INSERT INTO transactions (type, category, amount, method, description, order_id) VALUES ('in','Pembayaran Order',?,?,?,?)",
         [amount, method, `Pembayaran ${o.code} - ${o.client_name}`, o.id]);
-    await run("UPDATE orders SET paid = paid + ?, updated_at = datetime('now','localtime') WHERE id = ?", [amount, o.id]);
+    await run("UPDATE orders SET paid = paid + ?, updated_at = datetime('now','+7 hours') WHERE id = ?", [amount, o.id]);
     await orders.logStatus(o.id, o.status, req.user.name, `Pembayaran Rp ${amount.toLocaleString('id-ID')} (${method})`);
     res.json({ message: 'Pembayaran dicatat' });
 }));
@@ -144,8 +144,8 @@ router.post('/finance/transactions', wrap(async (req, res) => {
     const category = String(req.body.category || '').trim();
     if (!(amount > 0)) throw httpError(400, 'Nominal tidak valid.');
     if (!category) throw httpError(400, 'Kategori wajib diisi.');
-    const date = /^\d{4}-\d{2}-\d{2}$/.test(req.body.date || '') ? req.body.date + ' ' + new Date().toTimeString().slice(0, 8) : null;
-    await run(`INSERT INTO transactions (type, category, amount, method, description, created_at) VALUES (?,?,?,?,?,COALESCE(?, datetime('now','localtime')))`,
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(req.body.date || '') ? req.body.date + ' ' + new Date(Date.now() + 7 * 3600e3).toISOString().slice(11, 19) : null;
+    await run(`INSERT INTO transactions (type, category, amount, method, description, created_at) VALUES (?,?,?,?,?,COALESCE(?, datetime('now','+7 hours')))`,
         [type, category, amount, req.body.method || null, String(req.body.description || '').trim(), date]);
     res.json({ message: 'Transaksi dicatat' });
 }));
